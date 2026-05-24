@@ -1,0 +1,31 @@
+APP_NAME=MUSANG_FUEL.V2
+ID_PANEL=5                     
+COUNTRY_CODE=IDN               
+LOCATION=JAKARTA               
+COMPANY_CODE=TRUST            
+
+HEADER=PT.MUSANG                
+HEADER2=TEKNOLOGI NUSANTARA    
+FOOTER=TERIMA KASIH             
+FOOTER2=HATI-HATI               
+
+
+IP=192.168.9.201.201            
+SSID=ipul                       
+SSID_USER=TONO 
+SSID_PASSWORD=asdfghjkl                  
+HOST_PORT=1883 
+MQTT_USER=datalogger 
+MQTT_PASSWORD=test123 
+MQTT_TOPIC=flowmeter 
+
+
+K_FAKTOR=7.2062614497 
+C_FAKTOR=0.279  
+SLOW_DOWN_THRESHOLD=20 
+PULSER_CHANNEL=1
+
+
+RFID_STATUS=1             
+MODEM_STATUS=0               
+GPS_STATUS=1               
