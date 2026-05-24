@@ -170,7 +170,7 @@ void NetworkService::update()
     // =========================
     if (!isWiFiConnected()) {
 
-        if (now - _lastWifiReconnect > 10000) {
+        if (now - _lastWifiReconnect > 2000) {
 
             _lastWifiReconnect = now;
 
@@ -183,17 +183,17 @@ void NetworkService::update()
     // =========================
     // MQTT
     // =========================
-    if (!_mqtt.connected()) {
+    // if (!_mqtt.connected()) {
 
-        if (now - _lastMqttReconnect > 5000) {
+    //     if (now - _lastMqttReconnect > 5000) {
 
-            _lastMqttReconnect = now;
+    //         _lastMqttReconnect = now;
 
-            connectMQTT();
-        }
-    }
+    //         connectMQTT();
+    //     }
+    // }
 
-    _mqtt.loop();
+    // _mqtt.loop();
 }
 
 // ============================================

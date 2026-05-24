@@ -147,7 +147,7 @@ void TaskStateMachine(void *pv) {
             // SEND LIVE UDP
             // EVERY 500 ms
             // =====================================
-            if (millis() - lastUdpSend >= 500)
+            if (millis() - lastUdpSend >= 2000)
             {
                 lastUdpSend = millis();
 
