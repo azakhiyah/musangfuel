@@ -1,4 +1,5 @@
 #pragma once
+#ifdef ENABLE_NETWORK
 #include <stdint.h>
 
 typedef enum {
@@ -25,3 +26,4 @@ typedef struct {
     telemetryData telemetryPayload;
     mqttData mqttPayload;
 } NetworkJob;
+#endif

@@ -544,7 +544,7 @@ void TaskUI(void *pv) {
 
 
                 case STATE_CALIB_DEVICE_STATUS:
-                    UI_RenderDeviceStatusrMenu(deviceStatusPage);
+                    UI_RenderDeviceMenu(devicePage);
                 break;
                 
                 case STATE_CALIB_GPS_STATUS:
@@ -769,6 +769,10 @@ void TaskUI(void *pv) {
                 
                 case STATE_SHOW_RFID_STATUS:
                     UI_RenderRfidStatusShow();
+                break;
+
+                case STATE_WIFI_STATUS:
+                    UI_RenderWifiStatusShow();
                 break;
 
                 case STATE_SHOW_USER:

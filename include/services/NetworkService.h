@@ -20,6 +20,7 @@ private:
     // WIFI
     // =========================
     const char* _ssid;
+    const char* _user;
     const char* _password;
 
     // =========================
@@ -58,6 +59,7 @@ public:
 
     void begin(
         const char* ssid,
+        const char* user,
         const char* password,
 
         const char* mqttHost,
@@ -85,6 +87,10 @@ public:
     bool isWiFiConnected();
 
     bool isMQTTConnected();
+
+    const char* getIPAddress();
+
+    const char* getMACAddress();
 
     void sendPendingTransaction();
 };

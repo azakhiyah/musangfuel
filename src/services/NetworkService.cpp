@@ -1,6 +1,12 @@
+#ifdef ENABLE_NETWORK
 #include "services/NetworkService.h"
 #include <LittleFS.h>
 #include <FS.h>
+
+#ifdef ENABLE_WPA2_ENTERPRISE
+#include "esp_wpa2.h" // Untuk WPA2 Enterprise
+#endif
+
 NetworkService network;
 
 // ============================================
@@ -20,6 +26,7 @@ NetworkService::NetworkService()
 
 void NetworkService::begin(
     const char* ssid,
+    const char* user,
     const char* password,
 
     const char* mqttHost,
@@ -33,6 +40,7 @@ void NetworkService::begin(
 )
 {
     _ssid = ssid;
+    _user = user;
     _password = password;
 
     _mqttHost = mqttHost;
@@ -65,29 +73,68 @@ void NetworkService::connectWiFi()
         return;
     }
 
-    Serial.println("WIFI CONNECTING...");
+    WiFi.disconnect(true);
 
-    WiFi.begin(_ssid, _password);
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    WiFi.mode(WIFI_STA);
+
+#ifdef ENABLE_WPA2_ENTERPRISE
+
+    // =====================================
+    // WPA2 ENTERPRISE
+    // =====================================
+
+    if (strcmp(_user, "x") != 0)
+    {
+        esp_wifi_sta_wpa2_ent_set_identity(
+            (uint8_t*)_user,
+            strlen(_user)
+        );
+
+        esp_wifi_sta_wpa2_ent_set_username(
+            (uint8_t*)_user,
+            strlen(_user)
+        );
+
+        esp_wifi_sta_wpa2_ent_set_password(
+            (uint8_t*)_password,
+            strlen(_password)
+        );
+
+        esp_wifi_sta_wpa2_ent_enable();
+
+        WiFi.begin(_ssid);
+    }
+    else
+    {
+        WiFi.begin(
+            _ssid,
+            _password
+        );
+    }
+
+#else
+
+    // =====================================
+    // NORMAL WPA/WPA2 PERSONAL
+    // =====================================
+
+    WiFi.begin(
+        _ssid,
+        _password
+    );
+
+#endif
 
     uint32_t start = millis();
 
-    while (WiFi.status() != WL_CONNECTED &&
-           millis() - start < 10000)
+    while (
+        WiFi.status() != WL_CONNECTED &&
+        millis() - start < 10000
+    )
     {
-        delay(500);
-        //Serial.print(".");
-    }
-
-    Serial.println();
-
-    if (WiFi.status() == WL_CONNECTED) {
-
-        Serial.println("WIFI CONNECTED");
-        Serial.println(WiFi.localIP());
-
-    } else {
-
-        //Serial.println("WIFI FAILED");
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
 
@@ -107,7 +154,7 @@ void NetworkService::connectMQTT()
         return;
     }
 
-    Serial.println("MQTT CONNECTING...");
+    //Serial.println("MQTT CONNECTING...");
 
     char clientId[32];
 
@@ -140,12 +187,12 @@ void NetworkService::connectMQTT()
 
     if (ok) {
 
-        Serial.println("MQTT CONNECTED");
+        //Serial.println("MQTT CONNECTED");
 
     } else {
 
-        Serial.print("MQTT FAILED rc=");
-        Serial.println(_mqtt.state());
+        //Serial.print("MQTT FAILED rc=");
+        //Serial.println(_mqtt.state());
     }
     
 }
@@ -199,9 +246,9 @@ void NetworkService::sendPendingTransaction()
 
     if (!root || !root.isDirectory()) {
 
-        Serial.println(
-            "FAILED OPEN ROOT DIR"
-        );
+        // Serial.println(
+        //     "FAILED OPEN ROOT DIR"
+        // );
 
         return;
     }
@@ -284,29 +331,29 @@ void NetworkService::sendPendingTransaction()
             bool removed =
                 LittleFS.remove(fullpath);
 
-            if (removed)
-            {
-                Serial.printf(
-                    "FILE SENT & DELETED: %s\n",
-                    filename
-                );
-            }
-            else
-            {
-                Serial.printf(
-                    "FAILED DELETE: %s\n",
-                    filename
-                );
-            }
+            // if (removed)
+            // {
+            //     Serial.printf(
+            //         "FILE SENT & DELETED: %s\n",
+            //         filename
+            //     );
+            // }
+            // else
+            // {
+            //     Serial.printf(
+            //         "FAILED DELETE: %s\n",
+            //         filename
+            //     );
+            // }
 
             return;
         }
         else
         {
-            Serial.printf(
-                "MQTT SEND FAILED: %s\n",
-                filename
-            );
+            // Serial.printf(
+            //     "MQTT SEND FAILED: %s\n",
+            //     filename
+            // );
         }
     }
 
@@ -330,15 +377,15 @@ bool NetworkService::publishMQTT(const char* payload)
 
     if (ok) {
 
-        Serial.println(
-            "MQTT PUBLISH OK"
-        );
+        // Serial.println(
+        //     "MQTT PUBLISH OK"
+        // );
 
     } else {
 
-        Serial.println(
-            "MQTT PUBLISH FAILED"
-        );
+        // Serial.println(
+        //     "MQTT PUBLISH FAILED"
+        // );
     }
 
     return ok;
@@ -377,3 +424,37 @@ bool NetworkService::isMQTTConnected()
 {
     return _mqtt.connected();
 }
+
+const char* NetworkService::getIPAddress()
+{
+    static char ip[32];
+
+    snprintf(
+        ip,
+        sizeof(ip),
+        "%u.%u.%u.%u",
+
+        WiFi.localIP()[0],
+        WiFi.localIP()[1],
+        WiFi.localIP()[2],
+        WiFi.localIP()[3]
+    );
+
+    return ip;
+}
+
+const char* NetworkService::getMACAddress()
+{
+    static char mac[32];
+
+    snprintf(
+        mac,
+        sizeof(mac),
+        "%s",
+        WiFi.macAddress().c_str()
+    );
+
+    return mac;
+}
+
+#endif

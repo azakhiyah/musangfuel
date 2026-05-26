@@ -14,6 +14,7 @@ void UI_RenderRfidStatusInput(const char* input);
 void UI_RenderGpsStatusInput(const char* input);
 void UI_RenderModemStatusInput(const char* input);
 
+
 void handle_RfidStatusInput(const char* typed, char preview, const char* output);
 void handle_GpsStatusInput(const char* typed, char preview, const char* output);
 void handle_ModemStatusInput(const char* typed, char preview, const char* output);
@@ -21,6 +22,7 @@ void handle_ModemStatusInput(const char* typed, char preview, const char* output
 void UI_RenderRfidStatusShow();
 void UI_RenderGpsStatusShow();
 void UI_RenderModemStatusShow();
+void UI_RenderWifiStatusShow();
 
 
 

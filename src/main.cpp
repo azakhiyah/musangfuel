@@ -19,7 +19,10 @@
 #include "tasks/TaskPulser.h"
 #include "tasks/TaskStateMachine.h"
 #include "tasks/TaskPrinter.h"
+
+#ifdef ENABLE_NETWORK
 #include "tasks/TaskNetwork.h"
+#endif
 
 void setup() {
     Serial.begin(115200);
@@ -69,7 +72,9 @@ void setup() {
     // CORE 0 
     xTaskCreatePinnedToCore(TaskGPS,"TaskGPS",2048,NULL, 1, NULL,0);
     xTaskCreatePinnedToCore(TaskPrinter,"TaskPrinter",4096,NULL,1,NULL,0);
+    #ifdef ENABLE_NETWORK
     xTaskCreatePinnedToCore(TaskNetwork,"TaskNetwork",4096,NULL,1,NULL,0);
+    #endif
     
 }
 

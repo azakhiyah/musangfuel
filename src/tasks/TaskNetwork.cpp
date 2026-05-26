@@ -1,3 +1,4 @@
+#ifdef ENABLE_NETWORK
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <FS.h>
@@ -21,6 +22,7 @@
            if (enabled) {
             network.begin(
                 Config::GetSSID(),
+                Config::GetSSIDUser(),
                 Config::GetSSIDPassword(),
                 Config::GetIP(),
                 Config::GetHostPort(),
@@ -160,6 +162,8 @@
     }
 
  }
+
+ #endif
     
 
  

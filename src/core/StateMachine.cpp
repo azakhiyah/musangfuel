@@ -718,17 +718,17 @@ void StateMachine_HandleEvent(Event *evt) {
 
                 if (key == 'D') {
 
-                    if ((deviceStatusPage + 1) * 4 < DEVICE_STATUS_ITEM_COUNT) {
+                    if ((devicePage + 1) * 4 < DEVICE_ITEM_COUNT) {
 
-                        deviceStatusPage++;
+                        devicePage++;
 
                     } else {
 
                         // kembali ke page awal
-                        deviceStatusPage = 0;
+                        devicePage = 0;
                     }
               
-                    UI_RenderDeviceStatusrMenu(deviceStatusPage);
+                    UI_RenderDeviceMenu(devicePage);
 
                     break;
                 }
@@ -1089,6 +1089,14 @@ void StateMachine_HandleEvent(Event *evt) {
                     break;
                 }
 
+                if (key == '4') {
+                    KeypadMultiKey_Clear();
+                    currentState = STATE_WIFI_STATUS;
+                    break;
+                }
+
+              
+
                 if (key == '*') {
                     KeypadMultiKey_Clear();
                     currentState =STATE_SHOW_CONF;
@@ -1412,6 +1420,20 @@ void StateMachine_HandleEvent(Event *evt) {
         case STATE_SHOW_GPS_STATUS:
         {
             if (evt->type == EVT_KEYPAD) {
+                char key = (char)evt->payload[0];
+
+                if (key == '*') {
+                        KeypadMultiKey_Clear();
+                        currentState =STATE_SHOW_DEVICE_STATUS;
+                        break;
+                    }
+             }
+            break;
+        }
+
+        case STATE_WIFI_STATUS:
+        {   
+             if (evt->type == EVT_KEYPAD) {
                 char key = (char)evt->payload[0];
 
                 if (key == '*') {
@@ -3578,7 +3600,6 @@ void StateMachine_HandleEvent(Event *evt) {
     
                         if (key == '#') {
                             PrintJob job;
-                            NetworkJob jobNetwork;
                             pulser.stopSelenoidValve();
                             KeypadMultiKey_Clear();
                             RuntimeStorage::Transaction_SetUserId(g_Shift.userId);

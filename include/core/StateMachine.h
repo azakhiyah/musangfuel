@@ -128,6 +128,7 @@ typedef enum {
             STATE_CALIB_RFID_STATUS,
                 STATE_CALIB_RFID_STATUS_SUCCESS,
                 STATE_CALIB_RFID_STATUS_FAILED,
+            STATE_WIFI_STATUS,
    
  
 
@@ -189,6 +190,7 @@ static uint8_t struckPage = 0;
 static uint8_t netPage = 0;
 static uint8_t meterPage = 0;
 static uint8_t deviceStatusPage = 0;
+static uint8_t devicePage = 0;
 static uint8_t userPage = 0;
 void StateMachine_Init();
 void StateMachine_HandleEvent(Event *evt);

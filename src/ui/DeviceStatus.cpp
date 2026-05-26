@@ -3,6 +3,10 @@
 #include <cstring>
 #include <cstdio>
 
+#ifdef ENABLE_NETWORK
+#include "services/NetworkService.h"
+#endif
+
 void UI_RenderRfidStatusInput(const char* input)
 {
     LCD_Clear();
@@ -108,6 +112,43 @@ void UI_RenderModemStatusShow() {
   LCD_SetCursor(0, 3);
   LCD_Print(buffer);
 }
+
+void UI_RenderWifiStatusShow()
+{
+    LCD_Clear();
+
+    LCD_SetCursor(0, 0);
+    LCD_Print("WiFi Status");
+
+    LCD_SetCursor(0, 1);
+    #ifdef ENABLE_NETWORK
+    if (!network.isWiFiConnected())
+    {
+        LCD_Print("Disconnected");
+
+        delay(2000);
+
+        return;
+    }
+
+    LCD_Print(
+        network.getIPAddress()
+    );
+
+    LCD_SetCursor(0, 2);
+
+    LCD_Print(
+        network.getMACAddress()
+    );
+    #endif
+
+    // LCD_SetCursor(0, 3);
+
+    // LCD_Print(
+    //     network.getSSID()
+    // );
+}
+
 
 
 void handle_GpsStatusInput(const char* typed, char preview, const char* output)

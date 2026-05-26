@@ -155,7 +155,8 @@ void UI_RenderMeterMenu(uint8_t page)
 const char *deviceStatusItems[] = {
   "1.Rfid Status",
   "2.Modem Status",
-  "3.Gps Status"
+  "3.Gps Status",
+  "4.Wifi Status"
 };
 
 uint8_t DEVICE_STATUS_ITEM_COUNT = sizeof(deviceStatusItems) / sizeof(deviceStatusItems[0]);
@@ -178,6 +179,34 @@ void UI_RenderDeviceStatusrMenu(uint8_t page)
     }
   }
 }
+
+const char *deviceItems[] = {
+  "1.Rfid",
+  "2.Modem",
+  "3.Gps"
+};
+
+uint8_t DEVICE_ITEM_COUNT = sizeof(deviceItems) / sizeof(deviceItems[0]);
+
+void UI_RenderDeviceMenu(uint8_t page)
+{
+  LCD_Clear();
+
+  uint8_t itemsPerPage = 4;
+  uint8_t startIdx = page * itemsPerPage;
+
+  for (uint8_t i = 0; i < itemsPerPage; i++)
+  {
+    uint8_t itemIdx = startIdx + i;
+
+    if (itemIdx < DEVICE_ITEM_COUNT)
+    {
+      LCD_SetCursor(0, i);
+      LCD_Print(deviceItems[itemIdx]);
+    }
+  }
+}
+
 
 const char *userItems[] = {
   "1.Add",

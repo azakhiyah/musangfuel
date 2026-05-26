@@ -6,12 +6,17 @@
 #include "config/Config.h"
 #include "core/RuntimeStorage.h"
 #include "io/PulserEncoder.h"
-#include "services/NetworkService.h"
+
 //#include "tasks/TaskUI.h"
 #include "ui/OperationMenu.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+
+
+#ifdef ENABLE_NETWORK
+#include "services/NetworkService.h"
+#endif
 
 
 void TaskStateMachine(void *pv) {
@@ -79,7 +84,8 @@ void TaskStateMachine(void *pv) {
                 }
         }
 */        
-
+    
+#ifdef ENABLE_NETWORK
     if (state == STATE_EXECUTING_TRANSACTION)
     {
         NetworkJob job;
@@ -174,6 +180,9 @@ void TaskStateMachine(void *pv) {
 
         }
     }
+    
+    
+#endif
 
         vTaskDelay(pdMS_TO_TICKS(5)); // loop cepat
 
