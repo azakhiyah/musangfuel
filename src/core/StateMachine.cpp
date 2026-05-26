@@ -3578,6 +3578,7 @@ void StateMachine_HandleEvent(Event *evt) {
     
                         if (key == '#') {
                             PrintJob job;
+                            NetworkJob jobNetwork;
                             pulser.stopSelenoidValve();
                             KeypadMultiKey_Clear();
                             RuntimeStorage::Transaction_SetUserId(g_Shift.userId);
@@ -3638,6 +3639,14 @@ void StateMachine_HandleEvent(Event *evt) {
                             PrintQueue_Send(&job);
                             //RuntimeStorage::Transaction_SaveLast();
                             RuntimeStorage::Transaction_SaveLastToFS();
+                            //  jobNetwork.type = MQTT;
+                            //  snprintf(
+                            //     jobNetwork.mqttPayload.filename,
+                            //     sizeof(jobNetwork.mqttPayload.filename),
+                            //     "/trx_%06lu.json",
+                            //     g_transaction.slipNumber
+                            // );
+                            // NetworkQueue_Send(&jobNetwork);
                             currentState = STATE_FINISHING_TRANSACTION;
                             break;
                         }

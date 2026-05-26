@@ -10,14 +10,14 @@ FOOTER=TERIMA KASIH
 FOOTER2=HATI-HATI               
 
 
-IP=192.168.9.201.201            
+IP=103.118.175.161            
 SSID=ipul                       
 SSID_USER=TONO 
 SSID_PASSWORD=asdfghjkl                  
 HOST_PORT=1883 
 MQTT_USER=datalogger 
-MQTT_PASSWORD=test123 
-MQTT_TOPIC=flowmeter 
+MQTT_PASSWORD=kopiluwakdtl 
+MQTT_TOPIC=basemamti
 
 
 K_FAKTOR=7.2062614497 
@@ -27,5 +27,5 @@ PULSER_CHANNEL=1
 
 
 RFID_STATUS=1             
-MODEM_STATUS=0               
+MODEM_STATUS=1               
 GPS_STATUS=1               

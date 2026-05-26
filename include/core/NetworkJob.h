@@ -23,5 +23,5 @@ typedef struct {
 typedef struct {
     NetworkType type;
     telemetryData telemetryPayload;
-    mqttData payload;
+    mqttData mqttPayload;
 } NetworkJob;

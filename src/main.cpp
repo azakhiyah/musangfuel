@@ -41,7 +41,7 @@ void setup() {
     RuntimeStorage::loadShift(g_Shift);
     RuntimeStorage::Transaction_LoadLastFromFS();
 
-    //RuntimeStorage::ListFiles("/",0);
+    RuntimeStorage::ListFiles("/",0);
     
     char buffer[21];
     /*

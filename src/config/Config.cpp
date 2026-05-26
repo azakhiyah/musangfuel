@@ -18,7 +18,7 @@ namespace {
         char footer[21];
         char footer2[21];
 
-        char ip[15];    
+        char ip[16];    
         char ssid[21];
         char ssidUser[21];
         char ssidPassword[21];

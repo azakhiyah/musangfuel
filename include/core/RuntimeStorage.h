@@ -158,7 +158,7 @@ public:
     static uint32_t Transaction_GetSlipNumber();
 
 
-    //static void ListFiles(const char* directory, uint8_t levels);
+    static void ListFiles(const char* directory, uint8_t levels);
     
 
 

@@ -1,9 +1,6 @@
-// ============================================
-// File : services/NetworkService.cpp
-// ============================================
-
 #include "services/NetworkService.h"
-
+#include <LittleFS.h>
+#include <FS.h>
 NetworkService network;
 
 // ============================================
@@ -70,19 +67,7 @@ void NetworkService::connectWiFi()
 
     Serial.println("WIFI CONNECTING...");
 
-        //Serial.printf("SSID='%s'\n", _ssid);
-        // for (int i = 0; i < 21; i++) {
-        //        Serial.printf("%02X ", (uint8_t)_ssid[i]);
-        //  }
-        //  Serial.println();
-        // Serial.printf("LEN=%d\n", strlen(_ssid));
-        // Serial.printf("PASSWORD='%s'\n", _password);
-        // Serial.printf("LEN=%d\n", strlen(_password));b
-    // Serial.printf("SSID: %s\n",_ssid);
-    // Serial.printf("PASSWORD:%s\n",_password);
-
     WiFi.begin(_ssid, _password);
-    //WiFi.begin("ipul","asdfghjkl");
 
     uint32_t start = millis();
 
@@ -111,10 +96,12 @@ void NetworkService::connectWiFi()
 // ============================================
 
 void NetworkService::connectMQTT()
+
 {
     if (!isWiFiConnected()) {
         return;
     }
+
 
     if (_mqtt.connected()) {
         return;
@@ -133,6 +120,9 @@ void NetworkService::connectMQTT()
 
     bool ok;
 
+    // IMPORTANT
+    vTaskDelay(pdMS_TO_TICKS(10));
+
     if (strlen(_mqttUser) > 0) {
 
         ok = _mqtt.connect(
@@ -145,6 +135,8 @@ void NetworkService::connectMQTT()
 
         ok = _mqtt.connect(clientId);
     }
+     // IMPORTANT
+    vTaskDelay(pdMS_TO_TICKS(10));
 
     if (ok) {
 
@@ -155,6 +147,7 @@ void NetworkService::connectMQTT()
         Serial.print("MQTT FAILED rc=");
         Serial.println(_mqtt.state());
     }
+    
 }
 
 // ============================================
@@ -183,19 +176,142 @@ void NetworkService::update()
     // =========================
     // MQTT
     // =========================
-    // if (!_mqtt.connected()) {
+    if (!_mqtt.connected()) {
 
-    //     if (now - _lastMqttReconnect > 5000) {
+        if (now - _lastMqttReconnect > 5000) {
 
-    //         _lastMqttReconnect = now;
+            _lastMqttReconnect = now;
 
-    //         connectMQTT();
-    //     }
-    // }
+            connectMQTT();
+        }
+    }
 
-    // _mqtt.loop();
+    _mqtt.loop();
 }
 
+void NetworkService::sendPendingTransaction()
+{
+    if (!isMQTTConnected()) {
+        return;
+    }
+
+    File root = LittleFS.open("/");
+
+    if (!root || !root.isDirectory()) {
+
+        Serial.println(
+            "FAILED OPEN ROOT DIR"
+        );
+
+        return;
+    }
+
+    while (true)
+    {
+        File file = root.openNextFile();
+
+        if (!file) {
+            break;
+        }
+
+        char filename[64];
+
+        strncpy(
+            filename,
+            file.name(),
+            sizeof(filename)
+        );
+
+        filename[sizeof(filename) - 1] = '\0';
+
+        bool isTransactionFile =
+            strstr(filename, "trx_") &&
+            strstr(filename, ".json");
+
+        if (!isTransactionFile) {
+
+            file.close();
+            continue;
+        }
+
+        Serial.printf(
+            "SENDING FILE: %s\n",
+            filename
+        );
+
+        // =========================
+        // READ FILE
+        // =========================
+        String json =
+            file.readString();
+
+        // IMPORTANT
+        file.close();
+
+        // =========================
+        // MQTT PUBLISH
+        // =========================
+        bool ok =
+            publishMQTT(
+                json.c_str()
+            );
+
+        _mqtt.loop();
+
+        vTaskDelay(pdMS_TO_TICKS(20));
+
+        // =========================
+        // DELETE FILE
+        // =========================
+        if (ok)
+        {
+            root.close();
+
+           char fullpath[64];
+
+            snprintf(
+                fullpath,
+                sizeof(fullpath),
+                "/%s",
+                filename
+            );
+
+            Serial.printf(
+                "DELETE PATH = [%s]\n",
+                fullpath
+            );
+
+            bool removed =
+                LittleFS.remove(fullpath);
+
+            if (removed)
+            {
+                Serial.printf(
+                    "FILE SENT & DELETED: %s\n",
+                    filename
+                );
+            }
+            else
+            {
+                Serial.printf(
+                    "FAILED DELETE: %s\n",
+                    filename
+                );
+            }
+
+            return;
+        }
+        else
+        {
+            Serial.printf(
+                "MQTT SEND FAILED: %s\n",
+                filename
+            );
+        }
+    }
+
+    root.close();
+}
 // ============================================
 // MQTT SEND
 // ============================================
@@ -206,10 +322,26 @@ bool NetworkService::publishMQTT(const char* payload)
         return false;
     }
 
-    return _mqtt.publish(
-        _mqttTopic,
-        payload
-    );
+     bool ok =
+        _mqtt.publish(
+            _mqttTopic,
+            payload
+        );
+
+    if (ok) {
+
+        Serial.println(
+            "MQTT PUBLISH OK"
+        );
+
+    } else {
+
+        Serial.println(
+            "MQTT PUBLISH FAILED"
+        );
+    }
+
+    return ok;
 }
 
 // ============================================

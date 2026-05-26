@@ -618,77 +618,77 @@ bool RuntimeStorage::Transaction_SaveLastToFS()
 }
 
 
-// void RuntimeStorage::ListFiles(const char* directory, uint8_t levels)
-// {
-//     File root = LittleFS.open(directory);
+void RuntimeStorage::ListFiles(const char* directory, uint8_t levels)
+{
+    File root = LittleFS.open(directory);
 
-//     if (!root) {
+    if (!root) {
 
-//         Serial.printf(
-//             "FAILED OPEN DIR: %s\n",
-//             directory
-//         );
+        Serial.printf(
+            "FAILED OPEN DIR: %s\n",
+            directory
+        );
 
-//         return;
-//     }
+        return;
+    }
 
-//     if (!root.isDirectory()) {
+    if (!root.isDirectory()) {
 
-//         Serial.printf(
-//             "NOT DIRECTORY: %s\n",
-//             directory
-//         );
+        Serial.printf(
+            "NOT DIRECTORY: %s\n",
+            directory
+        );
 
-//         root.close();
+        root.close();
 
-//         return;
-//     }
+        return;
+    }
 
-//     File file = root.openNextFile();
+    File file = root.openNextFile();
 
-//     while (file) {
+    while (file) {
 
-//         if (file.isDirectory()) {
+        if (file.isDirectory()) {
 
-//             Serial.print("[DIR ] ");
-//             Serial.println(file.name());
+            Serial.print("[DIR ] ");
+            Serial.println(file.name());
 
-//             // =====================================
-//             // RECURSIVE
-//             // =====================================
-//             if (levels > 0) {
+            // =====================================
+            // RECURSIVE
+            // =====================================
+            if (levels > 0) {
 
-//                 char subDir[64];
+                char subDir[64];
 
-//                 strncpy(
-//                     subDir,
-//                     file.name(),
-//                     sizeof(subDir) - 1
-//                 );
+                strncpy(
+                    subDir,
+                    file.name(),
+                    sizeof(subDir) - 1
+                );
 
-//                 subDir[sizeof(subDir) - 1] = '\0';
+                subDir[sizeof(subDir) - 1] = '\0';
 
-//                 ListFiles(subDir, levels - 1);
-//             }
+                ListFiles(subDir, levels - 1);
+            }
 
-//         } else {
+        } else {
 
-//             Serial.print("[FILE] ");
-//             Serial.print(file.name());
+            Serial.print("[FILE] ");
+            Serial.print(file.name());
 
-//             Serial.print("  SIZE: ");
-//             Serial.print(file.size());
+            Serial.print("  SIZE: ");
+            Serial.print(file.size());
 
-//             Serial.println(" bytes");
-//         }
+            Serial.println(" bytes");
+        }
 
-//         file.close();
+        file.close();
 
-//         file = root.openNextFile();
-//     }
+        file = root.openNextFile();
+    }
 
-//     root.close();
-// }
+    root.close();
+}
 
 
 bool RuntimeStorage::Transaction_LoadLastFromFS()

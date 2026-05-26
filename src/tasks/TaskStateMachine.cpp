@@ -80,7 +80,7 @@ void TaskStateMachine(void *pv) {
         }
 */        
 
-         if (state == STATE_EXECUTING_TRANSACTION)
+    if (state == STATE_EXECUTING_TRANSACTION)
     {
         NetworkJob job;
         static uint32_t lastUdpSend = 0;
@@ -150,30 +150,6 @@ void TaskStateMachine(void *pv) {
             if (millis() - lastUdpSend >= 2000)
             {
                 lastUdpSend = millis();
-
-                // char udpPayload[128];
-
-                // snprintf(
-                //     udpPayload,
-                //     sizeof(udpPayload),
-
-                //     "P,%lu,%u,%u,%u,%.2f,%.2f,;",
-
-                //     millis(),
-
-                //     Config::GetPanelId(),
-
-                //     fastValveStatus,
-
-                //     slowValveStatus,
-
-                //     vol,
-
-                //     pulser.getLPM()
-                // );
-
-                // network.sendUDP(udpPayload);
-
                 job.type = TELEMTRY;
                 job.telemetryPayload.timestamp = millis();
                 job.telemetryPayload.panelId = Config::GetPanelId();

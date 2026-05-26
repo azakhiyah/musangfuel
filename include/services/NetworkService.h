@@ -85,6 +85,8 @@ public:
     bool isWiFiConnected();
 
     bool isMQTTConnected();
+
+    void sendPendingTransaction();
 };
 
 // ============================================
