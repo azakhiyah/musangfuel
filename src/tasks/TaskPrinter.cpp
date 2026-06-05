@@ -11,6 +11,7 @@ extern Printer printer;
 void TaskPrinter(void *pv)
 {
     PrintJob job;
+    printer.begin();
     while (1) {
 
        
