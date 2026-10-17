@@ -51,7 +51,7 @@ void setup() {
     1.tambah menu input tgl DAN WAKTU *
     2 fix reprint transaksi saat restart hilang *
     3.tambah task RFID
-    4.tambah task Send Data
+    4.tambah task Send Data *
     - tambah logo
     5.Cari cara upload file user.db dan config.txt (dah ga perlu insert via keypad)*
     - menu insert user  baru 
