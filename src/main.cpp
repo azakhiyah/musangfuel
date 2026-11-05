@@ -13,7 +13,8 @@
 
 #include "services/TimeService.h"
 
-#include "tasks/TaskUI.h"
+//#include "tasks/TaskUI.h"
+#include "tasks/TaskTFT.h"
 #include "tasks/TaskKeypad.h"
 #include "tasks/TaskGPS.h"
 #include "tasks/TaskPulser.h"
@@ -64,7 +65,8 @@ void setup() {
 
 
     // CORE 1 (default 4096)
-    xTaskCreatePinnedToCore(TaskUI, "UI", 4096, NULL, 1, NULL, 1);
+    // xTaskCreatePinnedToCore(TaskUI, "UI", 4096, NULL, 1, NULL, 1);
+    xTaskCreatePinnedToCore(TaskTFT, "TFT", 4096, NULL, 1, NULL, 1);
     xTaskCreatePinnedToCore(TaskKeypad, "Keypad", 2048, NULL, 3, NULL, 1);
     xTaskCreatePinnedToCore(TaskStateMachine,"StateMachine",8192,NULL,2, NULL,1);
     xTaskCreatePinnedToCore(TaskPulser,"TaskPulser",2048,NULL,2,NULL,1);

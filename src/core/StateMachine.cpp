@@ -65,6 +65,7 @@ void StateMachine_HandleEvent(Event *evt) {
     uint8_t currentPage = 0;  
     static char inputUserId[16] = {0};
     static uint8_t inputUserIdLen = 0;
+    static char inputUserIdDisplay[20] = {0};
         
     static char inputPassword[16] = {0};
     static uint8_t inputPasswordLen = 0;
